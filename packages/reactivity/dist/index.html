@@ -11,14 +11,33 @@
         import { reactive, effect } from "./reactivity.esm.js";
         const obj = reactive({
             name: "John",
-            age: 18
+            age: 18,
+            flag: true
         });
         const _effect = effect(() => {
             app.innerHTML =  "姓名：" + obj.name + "，年龄：" + obj.age;
+            // app.innerHTML = obj.flag + obj.flag + obj.flag;
+            app.innerHTML = obj.flag ? obj.name + obj.name + obj.name : obj.age;
         })
 
         setTimeout(() => {
-            obj.age++;
+            // obj.age++; 
+            // obj.flag = false;
+            setTimeout(() => {
+                console.log("修改属性后，不应该触发 effect 执行重新")
+                obj.name = "Tom";
+            }, 1000)
+        }, 1000)
+
+
+
+        let runner = effect(() => {
+           app.innerHTML = obj.name + obj.name + obj.name;
+        }, {
+            scheduler: () => {
+                console.log("数据更新了，不重新渲染，走自己的逻辑")
+                runner()
+            }
         })
     </script>
 </body>
