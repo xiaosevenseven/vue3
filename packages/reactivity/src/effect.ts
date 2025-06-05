@@ -1,3 +1,4 @@
+import { DirtyLevels } from "./constants";
 
 
 //  创建一个响应式 effect 数据变化后可以在重新执行
@@ -42,9 +43,18 @@ class ReactiveEffect {
     deps = [];
     _depsLength = 0;
     _running = 0;
+    _dirtyLevel = DirtyLevels.Dirty;
     public active = true;
     constructor(public fn, public scheduler) { }
+
+    public get dirty() {
+        return this._dirtyLevel === DirtyLevels.Dirty;
+    }
+    public set dirty(v) {
+        this._dirtyLevel = v ? DirtyLevels.NoDirty : DirtyLevels.Dirty;
+    }
     run() {
+        this._dirtyLevel = DirtyLevels.Dirty;
         if (!this.active) {
             // 不是激活的，执行后什么都不用做
             return this.fn();

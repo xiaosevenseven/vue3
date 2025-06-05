@@ -1,5 +1,6 @@
 import { isObject } from "@vue/shared"
-import { mutableHandlers, ReactiveFlags } from "./baseHandler";
+import { mutableHandlers } from "./baseHandler";
+import { ReactiveFlags } from "./constants";
 
 const reactiveMap = new WeakMap();
 
@@ -24,3 +25,7 @@ function createReactiveObject(target: object) {
     reactiveMap.set(target, proxy)
     return proxy
 } 
+
+export function toReactive(value) {
+    return isObject(value) ? reactive(value) : value
+}
